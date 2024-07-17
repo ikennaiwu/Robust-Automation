@@ -28,6 +28,7 @@ jobs:
 
     - name: Deploy to local Docker
       run: |
+        echo "DOCKER_IMAGE=myapp:${{ github.sha }}" >> $GITHUB_ENV
         docker run -d -p 80:80 myapp:${{ github.sha }}
 
     - name: Notify deployment started
@@ -53,7 +54,7 @@ jobs:
 
     - name: Cleanup Docker containers
       run: |
-        docker ps -q --filter ancestor=myapp | xargs docker rm -f
+        docker ps -q --filter ancestor=${{ env.DOCKER_IMAGE }} | xargs docker rm -f
 
     - name: Notify cleanup
       run: |
